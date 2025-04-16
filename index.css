@@ -23,6 +23,7 @@
     rgba(0, 0, 0, 0.17) 0px 12px 13px, rgba(0, 0, 0, 0.09) 0px -3px 5px;
 }
 
+/* tools container */
 .tools-container {
   height: 3rem;
   width: 50%;
@@ -58,4 +59,92 @@
 .tools-container > .tool > i:hover {
   background-color: #e0e0e0;
   transition: background-color 0.3s ease;
+}
+
+/* pencil tool container */
+.pencil-tool-container {
+  height: 8rem;
+  width: 10rem;
+  background-color: aliceblue;
+  box-shadow: rgba(0, 0, 0, 0.25) 0px 54px 55px,
+    rgba(0, 0, 0, 0.12) 0px -12px 30px, rgba(0, 0, 0, 0.12) 0px 4px 6px,
+    rgba(0, 0, 0, 0.17) 0px 12px 13px, rgba(0, 0, 0, 0.09) 0px -3px 5px;
+  border-radius: 0.5rem;
+  position: absolute;
+  top: 6rem;
+  left: 6rem;
+  z-index: 1;
+  border-radius: 0.5rem;
+}
+
+.pencil-width-container {
+  height: 2rem;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.pencil-width-container > input[type="range"] {
+  width: 80%;
+  cursor: pointer;
+  /* -webkit-appearance: none; */
+  background-color: transparent;
+}
+
+.pencil-color-container {
+  height: calc(100% - 2rem);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.pencil-color {
+  width: 2rem;
+  height: 2rem;
+  border-radius: 50%;
+}
+
+.black {
+  background-color: black;
+}
+
+.red {
+  background-color: red;
+}
+
+.blue {
+  background-color: blue;
+}
+
+/* eraser tool container */
+.eraser-tool-container {
+  width: 7rem;
+  height: 2rem;
+  background-color: aliceblue;
+  box-shadow: rgba(0, 0, 0, 0.25) 0px 54px 55px,
+    rgba(0, 0, 0, 0.12) 0px -12px 30px, rgba(0, 0, 0, 0.12) 0px 4px 6px,
+    rgba(0, 0, 0, 0.17) 0px 12px 13px, rgba(0, 0, 0, 0.09) 0px -3px 5px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  position: absolute;
+  top: 6rem;
+  left: 10rem;
+  z-index: 1;
+  border-radius: 0.5rem;
+}
+
+.eraser-width-container {
+  height: 2rem;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.eraser-width-container > input[type="range"] {
+  width: 80%;
+  cursor: pointer;
+  /* -webkit-appearance: none; */
+  background-color: transparent;
 }
