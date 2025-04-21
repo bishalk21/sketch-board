@@ -75,6 +75,7 @@
   left: 6rem;
   z-index: 1;
   border-radius: 0.5rem;
+  display: none;
 }
 
 .pencil-width-container {
@@ -133,6 +134,7 @@
   left: 10rem;
   z-index: 1;
   border-radius: 0.5rem;
+  display: none;
 }
 
 .eraser-width-container {
