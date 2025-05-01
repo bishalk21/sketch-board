@@ -7,6 +7,7 @@ let pencilTool = document.querySelector(".pencil");
 let eraserTool = document.querySelector(".eraser");
 let pencilFlag = false;
 let eraserFlag = false;
+let stickyNote = document.querySelector(".sticky-note");
 
 // true -> show menu, false -> hide menu
 menuContainer.addEventListener("click", (e) => {
@@ -45,3 +46,99 @@ eraserTool.addEventListener("click", (e) => {
   if (eraserFlag) eraserToolContainer.style.display = "flex";
   else eraserToolContainer.style.display = "none";
 });
+
+// sticky note
+stickyNote.addEventListener("click", (e) => {
+  let stickyNoteContainer = document.createElement("div");
+  stickyNoteContainer.setAttribute("class", "sticky-note-tool-container");
+  stickyNoteContainer.innerHTML = `
+      <div class="header-container">
+          <div class="sticky-note-header">Sticky Note</div>
+          <div class="sticky-note-menu">
+            <div class="minimize-sticky-note">
+              <i class="fa-solid fa-minus"></i>
+            </div>
+            <div class="close-sticky-note">
+              <i class="fa-solid fa-xmark"></i>
+            </div>
+          </div>
+        </div>
+
+        <div class="sticky-note-body">
+          <textarea
+            id="sticky-note-text"
+            class="sticky-note-text"
+            placeholder="Write something..."
+          ></textarea>
+        </div>
+  `;
+
+  document.body.appendChild(stickyNoteContainer);
+
+  let closeStickyNote = stickyNoteContainer.querySelector(".close-sticky-note");
+  let minimizeStickyNote = stickyNoteContainer.querySelector(
+    ".minimize-sticky-note"
+  );
+
+  noteActions(minimizeStickyNote, closeStickyNote, stickyNoteContainer);
+
+  stickyNoteContainer.onmousedown = function (event) {
+    dragAndDrop(stickyNoteContainer, event);
+  };
+  stickyNoteContainer.ondragstart = function () {
+    return false;
+  };
+});
+
+function noteActions(minimizeStickyNote, closeStickyNote, stickyNoteContainer) {
+  // close sticky note
+  closeStickyNote.addEventListener("click", (e) => {
+    stickyNoteContainer.remove();
+  });
+
+  // minimize sticky note
+  minimizeStickyNote.addEventListener("click", (e) => {
+    let noteBody = stickyNoteContainer.querySelector(".sticky-note-body");
+    let display = getComputedStyle(noteBody).getPropertyValue("display");
+    if (display === "none") {
+      noteBody.style.display = "block";
+      minimizeStickyNote.children[0].classList.remove("fa-plus");
+      minimizeStickyNote.children[0].classList.add("fa-minus");
+    } else {
+      noteBody.style.display = "none";
+      minimizeStickyNote.children[0].classList.remove("fa-minus");
+      minimizeStickyNote.children[0].classList.add("fa-plus");
+    }
+  });
+}
+
+function dragAndDrop(element, event) {
+  let shiftX = event.clientX - element.getBoundingClientRect().left;
+  let shiftY = event.clientY - element.getBoundingClientRect().top;
+
+  element.style.position = "absolute";
+  element.style.zIndex = 1000;
+  // document.body.append(element);
+
+  moveAt(event.pageX, event.pageY);
+
+  // moves the element at (pageX, pageY) coordinates
+  // taking initial shifts into account
+  function moveAt(pageX, pageY) {
+    element.style.left = pageX - shiftX + "px";
+    element.style.top = pageY - shiftY + "px";
+  }
+
+  function onMouseMove(event) {
+    moveAt(event.pageX, event.pageY);
+  }
+
+  // move the element on mousemove
+  document.addEventListener("mousemove", onMouseMove);
+
+  // drop the element, remove unneeded handlers
+  element.onmouseup = function () {
+    document.removeEventListener("mousemove", onMouseMove);
+    element.onmouseup = null;
+  };
+}
