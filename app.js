@@ -8,6 +8,7 @@ let eraserTool = document.querySelector(".eraser");
 let pencilFlag = false;
 let eraserFlag = false;
 let stickyNote = document.querySelector(".sticky-note");
+let upload = document.querySelector(".upload");
 
 // true -> show menu, false -> hide menu
 menuContainer.addEventListener("click", (e) => {
@@ -47,11 +48,32 @@ eraserTool.addEventListener("click", (e) => {
   else eraserToolContainer.style.display = "none";
 });
 
-// sticky note
-stickyNote.addEventListener("click", (e) => {
+// sticky template
+function createStickyTemplate(stickyTemplate) {
   let stickyNoteContainer = document.createElement("div");
   stickyNoteContainer.setAttribute("class", "sticky-note-tool-container");
-  stickyNoteContainer.innerHTML = `
+
+  stickyNoteContainer.innerHTML = stickyTemplate;
+  document.body.appendChild(stickyNoteContainer);
+
+  let closeStickyNote = stickyNoteContainer.querySelector(".close-sticky-note");
+  let minimizeStickyNote = stickyNoteContainer.querySelector(
+    ".minimize-sticky-note"
+  );
+
+  noteActions(minimizeStickyNote, closeStickyNote, stickyNoteContainer);
+
+  stickyNoteContainer.onmousedown = function (event) {
+    dragAndDrop(stickyNoteContainer, event);
+  };
+  stickyNoteContainer.ondragstart = function () {
+    return false;
+  };
+}
+
+// sticky note
+stickyNote.addEventListener("click", (e) => {
+  let stickyNoteTemplateHTML = `
       <div class="header-container">
           <div class="sticky-note-header">Sticky Note</div>
           <div class="sticky-note-menu">
@@ -73,21 +95,7 @@ stickyNote.addEventListener("click", (e) => {
         </div>
   `;
 
-  document.body.appendChild(stickyNoteContainer);
-
-  let closeStickyNote = stickyNoteContainer.querySelector(".close-sticky-note");
-  let minimizeStickyNote = stickyNoteContainer.querySelector(
-    ".minimize-sticky-note"
-  );
-
-  noteActions(minimizeStickyNote, closeStickyNote, stickyNoteContainer);
-
-  stickyNoteContainer.onmousedown = function (event) {
-    dragAndDrop(stickyNoteContainer, event);
-  };
-  stickyNoteContainer.ondragstart = function () {
-    return false;
-  };
+  createStickyTemplate(stickyNoteTemplateHTML);
 });
 
 function noteActions(minimizeStickyNote, closeStickyNote, stickyNoteContainer) {
@@ -105,6 +113,7 @@ function noteActions(minimizeStickyNote, closeStickyNote, stickyNoteContainer) {
       minimizeStickyNote.children[0].classList.remove("fa-plus");
       minimizeStickyNote.children[0].classList.add("fa-minus");
     } else {
+      // noteContainer.style.display = "none";
       noteBody.style.display = "none";
       minimizeStickyNote.children[0].classList.remove("fa-minus");
       minimizeStickyNote.children[0].classList.add("fa-plus");
@@ -142,3 +151,36 @@ function dragAndDrop(element, event) {
     element.onmouseup = null;
   };
 }
+
+// upload image
+upload.addEventListener("click", (e) => {
+  // open file explorer
+  let input = document.createElement("input");
+  input.setAttribute("type", "file");
+  input.click();
+
+  input.addEventListener("change", (e) => {
+    let file = input.files[0];
+    let url = URL.createObjectURL(file);
+
+    let stickyImageTemplateHTML = `
+      <div class="header-container">
+          <div class="sticky-note-header">Image</div>
+          <div class="sticky-note-menu">
+            <div class="minimize-sticky-note">
+              <i class="fa-solid fa-minus"></i>
+            </div>
+            <div class="close-sticky-note">
+              <i class="fa-solid fa-xmark"></i>
+            </div>
+          </div>
+        </div>
+
+        <div class="sticky-note-body">
+          <img src="${url}" alt="" />
+        </div>
+    `;
+
+    createStickyTemplate(stickyImageTemplateHTML);
+  });
+});
