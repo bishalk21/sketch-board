@@ -2,6 +2,7 @@ let canvas = document.getElementById("canvas");
 let pencilColor = document.querySelectorAll(".pencil-color");
 let pencilWidth = document.querySelector(".pencil-width-container input");
 let eraserWidth = document.querySelector(".eraser-width-container input");
+let downloadBtn = document.getElementById("download");
 
 let pencilColorValue = "#ff0000"; // default color of the pencil - red
 let eraserColorValue = "#ffffff"; // default color of the eraser - white
@@ -103,4 +104,16 @@ eraserTool.addEventListener("click", (e) => {
     ctx.strokeStyle = pencilColorValue; // to set the color of the pencil
     ctx.lineWidth = pencilWidthValue; // to set the width of the pencil
   }
+});
+
+downloadBtn.addEventListener("click", (e) => {
+  let link = document.createElement("a");
+  link.href = canvas.toDataURL(); // to get the data URL of the canvas
+  //   link.target = "_blank"; // to open the link in a new tab
+  //   link.style.display = "none"; // to hide the link
+  //   document.body.appendChild(link); // to append the link to the body
+
+  link.download = "image.png";
+  link.click();
+  link.remove(); // to remove the link after downloading the image
 });
