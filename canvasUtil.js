@@ -3,6 +3,8 @@ let pencilColor = document.querySelectorAll(".pencil-color");
 let pencilWidth = document.querySelector(".pencil-width-container input");
 let eraserWidth = document.querySelector(".eraser-width-container input");
 let downloadBtn = document.getElementById("download");
+let undoBtn = document.getElementById("undo");
+let redoBtn = document.getElementById("redo");
 
 let pencilColorValue = "#ff0000"; // default color of the pencil - red
 let eraserColorValue = "#ffffff"; // default color of the eraser - white
@@ -14,6 +16,9 @@ canvas.height = window.innerHeight;
 
 // mouse down
 let mouseDown = false; // to check if the mouse is down or not
+
+let undoRedoStack = []; // to store the undo and redo actions
+let trackUndoRedo = 0; // to track the undo and redo actions (represent which action  from the stack is being used)
 
 // ctx to draw on canvas where we can use the canvas API
 let ctx = canvas.getContext("2d");
@@ -75,7 +80,12 @@ canvas.addEventListener("mousemove", (e) => {
 
 canvas.addEventListener("mouseup", (e) => {
   mouseDown = false; // to check if the mouse is down or not
-  ctx.closePath(); // to close the path
+  //   ctx.closePath(); // to close the path
+
+  // add the current state of the canvas to the undoRedoStack
+  let url = canvas.toDataURL();
+  undoRedoStack.push(url); // to push the url of the canvas to the stack
+  trackUndoRedo = undoRedoStack.length - 1; // to track the undo and redo actions (represent which action from the stack is being used)
 });
 
 pencilColor.forEach((color) => {
@@ -117,3 +127,41 @@ downloadBtn.addEventListener("click", (e) => {
   link.click();
   link.remove(); // to remove the link after downloading the image
 });
+
+undoBtn.addEventListener("click", (e) => {
+  if (trackUndoRedo > 0) {
+    trackUndoRedo--; // to track the undo and redo actions (represent which action from the stack is being used)
+  }
+  let trackObj = {
+    trackValue: trackUndoRedo,
+    undoRedoStack: undoRedoStack,
+  };
+  undoRedoCanvas(trackObj); // to undo the last action
+});
+
+// [canvas1, canvas2, canvas3, ...]
+// undo --> canvas3 --> canvas2 --> canvas1[0] ---> track--
+// redo --> canvas1 --> canvas2 --> canvas3 --> track++
+
+redoBtn.addEventListener("click", (e) => {
+  if (trackUndoRedo < undoRedoStack.length - 1) {
+    trackUndoRedo++;
+  }
+  let trackObj = {
+    trackValue: trackUndoRedo,
+    undoRedoStack: undoRedoStack,
+  };
+  undoRedoCanvas(trackObj);
+});
+
+function undoRedoCanvas(trackObj) {
+  trackUndoRedo = trackObj.trackValue;
+  undoRedoStack = trackObj.undoRedoStack;
+
+  let url = undoRedoStack[trackUndoRedo];
+  let image = new Image(); // to create a new image
+  image.src = url; // to set the source of the image to the data URL of the canvas
+  image.onload = () => {
+    ctx.drawImage(image, 0, 0, canvas.width, canvas.height);
+  };
+}
