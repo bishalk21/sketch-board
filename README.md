@@ -77,3 +77,32 @@ tool.lineWidth = 5; // width of the line
 // tool.lineTo(200, 200);
 // tool.stroke = "";
 ```
+
+## Real-time Drawing
+
+- Real-time drawing is a feature that allows multiple users to draw on the same canvas at the same time.
+- This is done using web sockets, which allow for bi-directional communication between the client and server.
+- Web sockets are a protocol that allows for real-time communication between the client and server.
+- Web sockets are a part of the HTML5 specification and are supported by all modern browsers.
+- Web sockets are used to send and receive messages between the client and server in real-time.
+
+## Web Sockets
+
+- Web sockets are a protocol that allows for real-time communication between the client and server.
+- Web sockets are a part of the HTML5 specification and are supported by all modern browsers.
+- Web sockets are used to send and receive messages between the client and server in real-time.
+
+### steps to create a web socket
+
+1. Create a web socket server using Node.js (express server) and the ws library.
+2. Create a web socket client using JavaScript and the WebSocket API.
+3. Connect the client to the server using the WebSocket API.
+4. Send and receive messages between the client and server using the WebSocket API.
+5. Use the messages to update the canvas in real-time.
+
+## Backend
+
+```bash
+npm init -y
+npm install express socket.io cors
+```

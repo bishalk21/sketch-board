@@ -56,7 +56,14 @@ function beginPathDraw(strokeObj) {
 
 canvas.addEventListener("mousedown", (e) => {
   mouseDown = true; // to check if the mouse is down or not
-  beginPathDraw({ startX: e.clientX, startY: e.clientY }); // to start a new path
+  // beginPathDraw({ startX: e.clientX, startY: e.clientY }); // to start a new path
+
+  // socket to send the data to the server
+  let data = {
+    startX: e.clientX,
+    startY: e.clientY,
+  };
+  socket.emit("beginPathDraw", data);
 });
 
 function drawStroke(strokeObj) {
@@ -69,12 +76,20 @@ function drawStroke(strokeObj) {
 
 canvas.addEventListener("mousemove", (e) => {
   if (mouseDown) {
-    drawStroke({
+    // socket to send the data to the server
+    let data = {
       endX: e.clientX,
       endY: e.clientY,
       color: eraserFlag ? eraserColorValue : pencilColorValue,
       width: eraserFlag ? eraserWidthValue : pencilWidthValue, // to draw a line to the point where we move the mouse
-    }); // to draw a line to the point where we move the mouse
+      // drawStroke({
+      //   endX: e.clientX,
+      //   endY: e.clientY,
+      //   color: eraserFlag ? eraserColorValue : pencilColorValue,
+      //   width: eraserFlag ? eraserWidthValue : pencilWidthValue, // to draw a line to the point where we move the mouse
+      // }); // to draw a line to the point where we move the mouse
+    };
+    socket.emit("drawStroke", data); // to send the data to the server
   }
 });
 
@@ -136,7 +151,9 @@ undoBtn.addEventListener("click", (e) => {
     trackValue: trackUndoRedo,
     undoRedoStack: undoRedoStack,
   };
-  undoRedoCanvas(trackObj); // to undo the last action
+
+  socket.emit("undoRedoCanvas", trackObj); // to send the data to the server
+  // undoRedoCanvas(trackObj); // to undo the last action
 });
 
 // [canvas1, canvas2, canvas3, ...]
@@ -151,7 +168,8 @@ redoBtn.addEventListener("click", (e) => {
     trackValue: trackUndoRedo,
     undoRedoStack: undoRedoStack,
   };
-  undoRedoCanvas(trackObj);
+  // undoRedoCanvas(trackObj);
+  socket.emit("undoRedoCanvas", trackObj); // to send the data to the server
 });
 
 function undoRedoCanvas(trackObj) {
@@ -165,3 +183,18 @@ function undoRedoCanvas(trackObj) {
     ctx.drawImage(image, 0, 0, canvas.width, canvas.height);
   };
 }
+
+socket.on("beginPathDraw", (data) => {
+  // data from server
+  beginPathDraw(data); // to start a new path
+});
+
+socket.on("drawStroke", (data) => {
+  // data from server
+  drawStroke(data); // to draw a line to the point where we move the mouse
+});
+
+socket.on("undoRedoCanvas", (trackObj) => {
+  // data from server
+  undoRedoCanvas(trackObj); // to undo the last action
+});

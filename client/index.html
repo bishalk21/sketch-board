@@ -108,6 +108,15 @@
     </div>
 
     <canvas id="canvas"></canvas>
+    <script
+      src="https://cdn.socket.io/4.8.1/socket.io.min.js"
+      integrity="sha384-mkQ3/7FUtcGyoppY6bz/PORYoGqOl7/aSUMn2ymDOJcapfS6PHqxhRTMh1RR0Q6+"
+      crossorigin="anonymous"
+    ></script>
+    <script>
+      let socket = io.connect("http://localhost:8000");
+    </script>
+    <!-- <script src="./socket.js"></script> -->
     <script src="./app.js"></script>
     <script src="./canvasUtil.js"></script>
   </body>
