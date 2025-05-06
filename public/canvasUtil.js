@@ -63,7 +63,10 @@ canvas.addEventListener("mousedown", (e) => {
     startX: e.clientX,
     startY: e.clientY,
   };
+
   socket.emit("beginPathDraw", data);
+
+  beginPathDraw(data); // to start a new path
 });
 
 function drawStroke(strokeObj) {
@@ -90,6 +93,8 @@ canvas.addEventListener("mousemove", (e) => {
       // }); // to draw a line to the point where we move the mouse
     };
     socket.emit("drawStroke", data); // to send the data to the server
+
+    drawStroke(data); // to draw a line to the point where we move the mouse
   }
 });
 
@@ -153,7 +158,7 @@ undoBtn.addEventListener("click", (e) => {
   };
 
   socket.emit("undoRedoCanvas", trackObj); // to send the data to the server
-  // undoRedoCanvas(trackObj); // to undo the last action
+  undoRedoCanvas(trackObj); // to undo the last action
 });
 
 // [canvas1, canvas2, canvas3, ...]
@@ -170,6 +175,8 @@ redoBtn.addEventListener("click", (e) => {
   };
   // undoRedoCanvas(trackObj);
   socket.emit("undoRedoCanvas", trackObj); // to send the data to the server
+
+  undoRedoCanvas(trackObj); // to undo the last action
 });
 
 function undoRedoCanvas(trackObj) {

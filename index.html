@@ -1,0 +1,123 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Sketch Board</title>
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.7.2/css/all.min.css"
+      integrity="sha512-Evv84Mr4kqVGRNSgIGL/F/aIDqQb7xQ2vcrdIwxfjThSH8CSR7PBEakCr51Ck+w+/U6swU2Im1vVX0SVk9ABhg=="
+      crossorigin="anonymous"
+      referrerpolicy="no-referrer"
+    />
+    <link rel="stylesheet" href="./public/index.css" />
+  </head>
+  <body>
+    <div class="container">
+      <div class="menu-container">
+        <i class="fa-solid fa-bars"></i>
+      </div>
+      <div class="tools-container scale-tools">
+        <!-- pencil -->
+        <div class="tool pencil" id="pencil" title="Pencil">
+          <i class="fa-solid fa-pencil"></i>
+        </div>
+        <!-- eraser -->
+        <div class="tool eraser" id="eraser" title="Eraser">
+          <i class="fa-solid fa-eraser"></i>
+        </div>
+        <!-- download -->
+        <div class="tool download" id="download" title="Download">
+          <i class="fa-solid fa-download"></i>
+        </div>
+        <!-- upload -->
+        <div class="tool upload" id="upload" title="Upload">
+          <i class="fa-solid fa-upload"></i>
+        </div>
+        <!-- sticky note -->
+        <div class="tool sticky-note" id="sticky-note" title="Sticky Note">
+          <i class="fa-solid fa-sticky-note"></i>
+        </div>
+        <!-- undo -->
+        <div class="tool undo" id="undo" title="Undo">
+          <i class="fa-solid fa-rotate-left"></i>
+        </div>
+        <!-- redo -->
+        <div class="tool redo" id="redo" title="Redo">
+          <i class="fa-solid fa-rotate-right"></i>
+        </div>
+      </div>
+
+      <!-- pencil tool container -->
+      <div class="pencil-tool-container">
+        <div class="pencil-width-container">
+          <input
+            type="range"
+            id="pencil-width"
+            class="pencil-width"
+            min="1"
+            max="50"
+            value="5"
+            class="pencil-width-slider"
+          />
+        </div>
+        <div class="pencil-color-container">
+          <div class="black pencil-color"></div>
+          <div class="blue pencil-color"></div>
+          <div class="red pencil-color"></div>
+        </div>
+      </div>
+
+      <!-- eraser tool container -->
+      <div class="eraser-tool-container">
+        <div class="eraser-width-container">
+          <input
+            type="range"
+            id="eraser-width"
+            min="1"
+            max="50"
+            value="5"
+            class="eraser-width-slider"
+          />
+        </div>
+      </div>
+
+      <!-- sticky note tool container -->
+      <!-- <div class="sticky-note-tool-container">
+        <div class="header-container">
+          <div class="sticky-note-header">Sticky Note</div>
+          <div class="sticky-note-menu">
+            <div class="minimize-sticky-note">
+              <i class="fa-solid fa-minus"></i>
+            </div>
+            <div class="close-sticky-note">
+              <i class="fa-solid fa-xmark"></i>
+            </div>
+          </div>
+        </div>
+
+        <div class="sticky-note-body">
+          <textarea
+            id="sticky-note-text"
+            class="sticky-note-text"
+            placeholder="Write something..."
+          ></textarea>
+        </div>
+      </div> -->
+    </div>
+
+    <canvas id="canvas"></canvas>
+    <script
+      src="https://cdn.socket.io/4.8.1/socket.io.min.js"
+      integrity="sha384-mkQ3/7FUtcGyoppY6bz/PORYoGqOl7/aSUMn2ymDOJcapfS6PHqxhRTMh1RR0Q6+"
+      crossorigin="anonymous"
+    ></script>
+    <script>
+      let socket = io.connect("http://localhost:8000");
+    </script>
+    <!-- <script src="./socket.js"></script> -->
+    <script src="./public/app.js"></script>
+    <script src="./public/canvasUtil.js"></script>
+  </body>
+</html>

@@ -1,11 +1,11 @@
 const express = require("express");
 const socket = require("socket.io");
-const path = require("path");
 
 const app = express();
 const PORT = 8000;
 
-app.use(express.static("../public"));
+app.use(express.static("../public")); // to serve the static files from the public folder
+app.use(express.json()); // to parse the json data from the client
 
 let server = app.listen(PORT, () => {
   console.log(`Server is running on port http://localhost:${PORT}`);
