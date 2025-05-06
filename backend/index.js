@@ -1,10 +1,11 @@
 const express = require("express");
 const socket = require("socket.io");
+const path = require("path");
 
 const app = express();
 const PORT = 8000;
 
-app.use(express.static("../client"));
+app.use(express.static("../public"));
 
 let server = app.listen(PORT, () => {
   console.log(`Server is running on port http://localhost:${PORT}`);
