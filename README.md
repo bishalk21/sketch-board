@@ -1,4 +1,4 @@
-# Openboard Clone
+# Openboard Clone [Sketch Board]
 
 - API
 

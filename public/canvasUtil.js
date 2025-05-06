@@ -54,20 +54,51 @@ function beginPathDraw(strokeObj) {
   ctx.moveTo(strokeObj.startX, strokeObj.startY); // to move the path to the point where we click on the canvas
 }
 
-canvas.addEventListener("mousedown", (e) => {
-  mouseDown = true; // to check if the mouse is down or not
-  // beginPathDraw({ startX: e.clientX, startY: e.clientY }); // to start a new path
+function getXY(e) {
+  if (e.touches) {
+    return {
+      x: e.touches[0].clientX,
+      y: e.touches[0].clientY,
+    };
+  } else {
+    return {
+      x: e.clientX,
+      y: e.clientY,
+    };
+  }
+}
 
-  // socket to send the data to the server
-  let data = {
-    startX: e.clientX,
-    startY: e.clientY,
+// canvas.addEventListener("mousedown", (e) => {
+//   mouseDown = true; // to check if the mouse is down or not
+//   // beginPathDraw({ startX: e.clientX, startY: e.clientY }); // to start a new path
+
+//   // socket to send the data to the server
+//   let data = {
+//     startX: e.clientX,
+//     startY: e.clientY,
+//   };
+
+//   socket.emit("beginPathDraw", data);
+
+//   beginPathDraw(data); // to start a new path
+// });
+
+function handleStart(e) {
+  e.preventDefault(); // prevent scrolling on touch
+  mouseDown = true;
+
+  const { x, y } = getXY(e);
+
+  const data = {
+    startX: x,
+    startY: y,
   };
 
   socket.emit("beginPathDraw", data);
-
-  beginPathDraw(data); // to start a new path
-});
+  beginPathDraw(data);
+}
+canvas.addEventListener("mousedown", handleStart);
+canvas.addEventListener("touchstart", handleStart);
 
 function drawStroke(strokeObj) {
   ctx.strokeStyle = strokeObj.color; // to set the color of the pencil
@@ -77,36 +108,65 @@ function drawStroke(strokeObj) {
   ctx.stroke(); // to fill the path with color
 }
 
-canvas.addEventListener("mousemove", (e) => {
-  if (mouseDown) {
-    // socket to send the data to the server
-    let data = {
-      endX: e.clientX,
-      endY: e.clientY,
-      color: eraserFlag ? eraserColorValue : pencilColorValue,
-      width: eraserFlag ? eraserWidthValue : pencilWidthValue, // to draw a line to the point where we move the mouse
-      // drawStroke({
-      //   endX: e.clientX,
-      //   endY: e.clientY,
-      //   color: eraserFlag ? eraserColorValue : pencilColorValue,
-      //   width: eraserFlag ? eraserWidthValue : pencilWidthValue, // to draw a line to the point where we move the mouse
-      // }); // to draw a line to the point where we move the mouse
-    };
-    socket.emit("drawStroke", data); // to send the data to the server
+// canvas.addEventListener("mousemove", (e) => {
+//   if (mouseDown) {
+//     // socket to send the data to the server
+//     let data = {
+//       endX: e.clientX,
+//       endY: e.clientY,
+//       color: eraserFlag ? eraserColorValue : pencilColorValue,
+//       width: eraserFlag ? eraserWidthValue : pencilWidthValue, // to draw a line to the point where we move the mouse
+//       // drawStroke({
+//       //   endX: e.clientX,
+//       //   endY: e.clientY,
+//       //   color: eraserFlag ? eraserColorValue : pencilColorValue,
+//       //   width: eraserFlag ? eraserWidthValue : pencilWidthValue, // to draw a line to the point where we move the mouse
+//       // }); // to draw a line to the point where we move the mouse
+//     };
+//     socket.emit("drawStroke", data); // to send the data to the server
 
-    drawStroke(data); // to draw a line to the point where we move the mouse
-  }
-});
+//     drawStroke(data); // to draw a line to the point where we move the mouse
+//   }
+// });
 
-canvas.addEventListener("mouseup", (e) => {
-  mouseDown = false; // to check if the mouse is down or not
-  //   ctx.closePath(); // to close the path
+function handleMove(e) {
+  if (!mouseDown) return;
+  e.preventDefault();
 
-  // add the current state of the canvas to the undoRedoStack
-  let url = canvas.toDataURL();
-  undoRedoStack.push(url); // to push the url of the canvas to the stack
-  trackUndoRedo = undoRedoStack.length - 1; // to track the undo and redo actions (represent which action from the stack is being used)
-});
+  const { x, y } = getXY(e);
+
+  const data = {
+    endX: x,
+    endY: y,
+    color: eraserFlag ? eraserColorValue : pencilColorValue,
+    width: eraserFlag ? eraserWidthValue : pencilWidthValue,
+  };
+
+  socket.emit("drawStroke", data);
+  drawStroke(data);
+}
+
+canvas.addEventListener("mousemove", handleMove);
+canvas.addEventListener("touchmove", handleMove);
+
+// canvas.addEventListener("mouseup", (e) => {
+//   mouseDown = false; // to check if the mouse is down or not
+//   //   ctx.closePath(); // to close the path
+
+//   // add the current state of the canvas to the undoRedoStack
+//   let url = canvas.toDataURL();
+//   undoRedoStack.push(url); // to push the url of the canvas to the stack
+//   trackUndoRedo = undoRedoStack.length - 1; // to track the undo and redo actions (represent which action from the stack is being used)
+// });
+
+function handleEnd(e) {
+  mouseDown = false;
+  const url = canvas.toDataURL();
+  undoRedoStack.push(url);
+  trackUndoRedo = undoRedoStack.length - 1;
+}
+canvas.addEventListener("mouseup", handleEnd);
+canvas.addEventListener("touchend", handleEnd);
 
 pencilColor.forEach((color) => {
   color.addEventListener("click", (e) => {
